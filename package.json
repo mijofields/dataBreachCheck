@@ -1,0 +1,30 @@
+{
+  "name": "data_breach_check",
+  "version": "1.0.0",
+  "description": "to check emails and passwords against haveibeenpwned API",
+  "main": "breach.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mijofields/dataBreachCheck.git"
+  },
+  "author": "Mike Fields",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mijofields/dataBreachCheck/issues"
+  },
+  "homepage": "https://github.com/mijofields/dataBreachCheck#readme",
+  "dependencies": {
+    "@babel/polyfill": "^7.2.5",
+    "chalk": "^2.4.2",
+    "inquirer": "^6.2.1",
+    "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3"
+  }
+}
