@@ -4,11 +4,15 @@
 
 const chalk = require('chalk');
 const inquirer = require('inquirer');
-const request = require('request');
+const axios = require('axios');
+const cTable = require('console.table');
+const numeral = require('numeral');
+const BreachTableObject = require('./breachTableObject.js');
 
 
 
-const question = chalk.bold.whiteBright;
+const question1 = chalk.bold.whiteBright("Hola Mike, what are we checking for today??");
+const question2 = chalk.bold.whiteBright("Whats the email address we are checking for??");
 const choice1 = chalk.red("Check email address breaches");
 const choice2 = chalk.yellow("Check email address pastes");
 
@@ -23,7 +27,7 @@ function start() {
 
         name: "action",
         type: "list",
-        message: question("Hola Mike, what are we checking for today??"),
+        message: question1,
         choices: [choice1, choice2]
 
         //more choices to be added for password checking later
@@ -35,7 +39,6 @@ function start() {
         switch (answer.action) {
 
             case choice1:
-                console.log(`API call for email address checking`);
                 emailCheck();
                 break;
 
@@ -62,11 +65,75 @@ function start() {
 
 function emailCheck() {
 
+    inquirer
+
+        .prompt({
+
+            name: "email",
+            type: "input",
+            message: question2,
+            validate: function(answer) {
+
+                    return /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/gi.test(answer);
+
+                } //end of validation
+
+
+
+        }) //end of prompt
+
+    .then(function(answer) {
+
+        axios({
+
+            method: 'get',
+            url: `https://haveibeenpwned.com/api/v2/breachedaccount/${answer.email}`,
+            headers: { 'User-Agent': `Mike's JS CLI` },
+            timeout: 1000,
+
+        })
+
+        .then(function(response) {
+
+
+                let tableObjectArr = [];
+
+                for (i = 0; i < response.data.length; i++) {
+
+                    let data = response.data[i];
+                    let tableObject = new BreachTableObject(data.Name, data.BreachDate, numeral(data.PwnCount).format('0,0'), data.IsVerified, data.IsFabricated)
+
+                    tableObjectArr.push(tableObject);
+
+                }
+
+                console.log(chalk.bold.red(`There have been the following ${response.data.length} breaches of ${answer.email}:`));
+                console.table(tableObjectArr);
+
+
+
+            })
+            .catch(function(error1) {
+
+                console.log(chalk.underline.yellow(`Lucky you ${answer.email} has no registered breaches!`))
+                console.log('Error: ', error1.message);
+
+            })
 
 
 
 
-}
+        //end of axios call
+
+
+
+
+
+
+
+    }); //end of then
+
+}; //end of emailCheck
 
 
 start();
