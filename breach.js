@@ -17,11 +17,11 @@ const sha1 = require('sha1');
 const question1 = chalk.bold.whiteBright("Hola Mike, what are we checking for today??");
 const question2 = chalk.bold.whiteBright("Whats the email address we are checking for??");
 const question3 = chalk.bold.whiteBright("Whats the email address we are checking pastes for??");
+const question4 = chalk.bold.whiteBright("Enter the password you wish to check:");
 const choice1 = chalk.red("Check email address breaches");
 const choice2 = chalk.yellow("Check email address pastes");
-const choice3 = chalk.cyan("Check passwords");
-const choice4 = chalk.magenta('Check if a password has been breached')
-
+const choice3 = chalk.magenta('Check if a password has been breached')
+const choice4 = chalk.cyan('Exit')
 
 function start() {
 
@@ -32,7 +32,7 @@ function start() {
         name: "action",
         type: "list",
         message: question1,
-        choices: [choice1, choice2, choice4]
+        choices: [choice1, choice2, choice3, choice4]
 
         //more choices to be added for password checking later
 
@@ -53,9 +53,11 @@ function start() {
 
             case choice3:
                 passwordCheck();
+                break;
 
-
-
+            case choice4:
+                console.log(`bye bye`)
+                break;
 
 
             default:
@@ -130,14 +132,14 @@ function emailCheck() {
                 };
 
 
-
+                start();
 
             })
             .catch(function(error1) {
 
                 console.log(chalk.underline.yellow(`Lucky you, ${answer.email} has no registered breaches!`))
                 console.log('Error: ', error1.message);
-
+                start();
             })
 
 
@@ -199,8 +201,7 @@ function pasteCheck() {
 
                 console.log(chalk.bold.red(`There have been the following ${response.data.length} breaches of ${answer.email}:`));
                 console.table(tableObjectArr1);
-
-
+                start();
 
 
             })
@@ -208,7 +209,7 @@ function pasteCheck() {
 
                 console.log(chalk.underline.yellow(`Lucky you, ${answer.email} has no registered pastes!`))
                 console.log('Error: ', error2.message);
-
+                start();
             })
 
 
@@ -228,14 +229,71 @@ function pasteCheck() {
 
 function passwordCheck() {
 
+    inquirer
+
+        .prompt({
+
+        name: "password",
+        type: "password",
+        message: question4
+
+    })
+
+    .then(function(answer) {
+
+        let passWordHash = sha1(answer.password);
+        let passWordHashSuffix = passWordHash.slice(-35);
+        console.log(chalk.greenBright(`Your password hash is: ${passWordHash}`));
+        console.log(chalk.yellowBright(`with k-Anonymity the API query will be on ${passWordHash.slice(0,5)}`));
+        axios({
+
+            method: 'get',
+            url: `https://api.pwnedpasswords.com/range/${passWordHash.slice(0,5)}`,
+            headers: { 'User-Agent': `Mike's JS CLI` },
+            timeout: 2000,
+
+        })
+
+        .then(function(answer) {
+
+                let suffixArr = answer.data.split('\r\n');
+                let suffixArrCountRemoved = [];
 
 
+                for (i = 0; i < suffixArr.length; i++) {
 
-    console.log(`to be built`);
+                    suffixArrCountRemoved.push(suffixArr[i].slice(0, 35));
 
 
+                }
 
-};
+
+                switch (suffixArrCountRemoved.includes(passWordHashSuffix)) {
+
+                    case true:
+                        console.log(chalk.bold.red(`This password has been breached, you should change this password immediately`));
+                        break;
+
+
+                    case false:
+                        console.log(chalk.bold.green(`This password has not been breached, your data is safe...for now`));
+                        break;
+
+
+                }; //end switch
+
+                start();
+
+
+            })
+            .catch(function(error3) {
+                console.log('Error: ', error3.message);
+            })
+
+
+    })
+
+}; //end of password check
 
 
 
