@@ -7,8 +7,9 @@ const inquirer = require('inquirer');
 const axios = require('axios');
 const cTable = require('console.table');
 const numeral = require('numeral');
-const BreachTableObject = require('./breachTableObject.js');
-const pasteModelBreach = require('./breachTableObject.js');
+const tableObjects = require('./breachTableObject.js')
+const BreachTableObject = tableObjects.BreachTableObject;
+const PasteModelBreach = tableObjects.PasteModelBreach;
 const sha1 = require('sha1');
 
 
@@ -99,7 +100,7 @@ function emailCheck() {
             method: 'get',
             url: `https://haveibeenpwned.com/api/v2/breachedaccount/${answer.email}`,
             headers: { 'User-Agent': `Mike's JS CLI` },
-            timeout: 1000,
+            timeout: 2000,
 
         })
 
@@ -125,7 +126,7 @@ function emailCheck() {
 
                 for (i = 0; i < response.data.length; i++) {
 
-                    console.log(chalk.underline.bold.blue(`${response.data[i].Name}:`), chalk.bold.cyan(`${response.data[i].DataClasses.join()}`));
+                    console.log(chalk.underline.bold.cyan(`${response.data[i].Name}:`), chalk.bold.cyan(`${response.data[i].DataClasses.join()}`));
                 };
 
 
@@ -180,7 +181,7 @@ function pasteCheck() {
                 method: 'get',
                 url: `https://haveibeenpwned.com/api/v2/pasteaccount/${answer.email}`,
                 headers: { 'User-Agent': `Mike's JS CLI` },
-                timeout: 1000,
+                timeout: 2000,
 
             })
             .then(function(response) {
@@ -190,7 +191,7 @@ function pasteCheck() {
                 for (i = 0; i < response.data.length; i++) {
 
                     let data = response.data[i];
-                    let tableObject1 = new pasteModelBreach(data.Source, data.Title, data.Date, numeral(data.EmailCount).format('0,0'));
+                    let tableObject1 = new PasteModelBreach(data.Source, data.Date, data.Title, numeral(data.EmailCount).format('0,0'));
 
                     tableObjectArr1.push(tableObject1);
 
@@ -198,7 +199,7 @@ function pasteCheck() {
 
                 console.log(chalk.bold.red(`There have been the following ${response.data.length} breaches of ${answer.email}:`));
                 console.table(tableObjectArr1);
-                console.log(chalk.underline.blue("**************************************"));
+
 
 
 

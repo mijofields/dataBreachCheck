@@ -9,7 +9,7 @@ function BreachTableObject(name, breachDate, pwnCount, isVerified, isFabricated)
 
 };
 
-function pasteModelBreach(source, date, title, emailCount) {
+function PasteModelBreach(source, date, title, emailCount) {
 
     this.Source = source,
         this.Paste_Date = date,
@@ -18,4 +18,8 @@ function pasteModelBreach(source, date, title, emailCount) {
 
 }
 
-module.exports = BreachTableObject, pasteModelBreach;
+module.exports = {
+
+    BreachTableObject: BreachTableObject,
+    PasteModelBreach: PasteModelBreach
+}
