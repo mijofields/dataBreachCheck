@@ -241,10 +241,10 @@ function passwordCheck() {
 
     .then(function(answer) {
 
-        let passWordHash = sha1(answer.password);
+        let passWordHash = sha1(answer.password.trim());
         let passWordHashSuffix = passWordHash.slice(-35);
-        console.log(chalk.greenBright(`Your password hash is: ${passWordHash}`));
-        console.log(chalk.yellowBright(`with k-Anonymity the API query will be on ${passWordHash.slice(0,5)}`));
+        console.log(chalk.greenBright(`Your password hash is: ${passWordHash.toUpperCase()}`));
+        console.log(chalk.yellowBright(`with k-Anonymity the API query will be on ${passWordHash.slice(0,5).toUpperCase()}`));
         axios({
 
             method: 'get',
@@ -268,7 +268,7 @@ function passwordCheck() {
                 }
 
 
-                switch (suffixArrCountRemoved.includes(passWordHashSuffix)) {
+                switch (suffixArrCountRemoved.includes(passWordHash.slice(-35).toUpperCase())) {
 
                     case true:
                         console.log(chalk.bold.red(`This password has been breached, you should change this password immediately`));
