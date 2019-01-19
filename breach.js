@@ -9,6 +9,7 @@ const cTable = require('console.table');
 const numeral = require('numeral');
 const BreachTableObject = require('./breachTableObject.js');
 const pasteModelBreach = require('./breachTableObject.js');
+const sha1 = require('sha1');
 
 
 
@@ -17,6 +18,8 @@ const question2 = chalk.bold.whiteBright("Whats the email address we are checkin
 const question3 = chalk.bold.whiteBright("Whats the email address we are checking pastes for??");
 const choice1 = chalk.red("Check email address breaches");
 const choice2 = chalk.yellow("Check email address pastes");
+const choice3 = chalk.cyan("Check passwords");
+const choice4 = chalk.magenta('Check if a password has been breached')
 
 
 function start() {
@@ -28,7 +31,7 @@ function start() {
         name: "action",
         type: "list",
         message: question1,
-        choices: [choice1, choice2]
+        choices: [choice1, choice2, choice4]
 
         //more choices to be added for password checking later
 
@@ -46,6 +49,13 @@ function start() {
             case choice2:
                 pasteCheck();
                 break;
+
+            case choice3:
+                passwordCheck();
+
+
+
+
 
             default:
                 console.log(`nothing seems to match`);
@@ -97,6 +107,7 @@ function emailCheck() {
 
 
                 let tableObjectArr = [];
+                let dataClasses = [];
 
                 for (i = 0; i < response.data.length; i++) {
 
@@ -105,17 +116,25 @@ function emailCheck() {
 
                     tableObjectArr.push(tableObject);
 
-                }
+
+                };
 
                 console.log(chalk.bold.red(`There have been the following ${response.data.length} breaches of ${answer.email}:`));
                 console.table(tableObjectArr);
+                console.log(chalk.bold.blue(`The following data types were exposed:`));
+
+                for (i = 0; i < response.data.length; i++) {
+
+                    console.log(chalk.underline.bold.blue(`${response.data[i].Name}:`), chalk.bold.cyan(`${response.data[i].DataClasses.join()}`));
+                };
+
 
 
 
             })
             .catch(function(error1) {
 
-                console.log(chalk.underline.yellow(`Lucky you ${answer.email} has no registered breaches!`))
+                console.log(chalk.underline.yellow(`Lucky you, ${answer.email} has no registered breaches!`))
                 console.log('Error: ', error1.message);
 
             })
@@ -179,13 +198,14 @@ function pasteCheck() {
 
                 console.log(chalk.bold.red(`There have been the following ${response.data.length} breaches of ${answer.email}:`));
                 console.table(tableObjectArr1);
+                console.log(chalk.underline.blue("**************************************"));
 
 
 
             })
             .catch(function(error2) {
 
-                console.log(chalk.underline.yellow(`Lucky you ${answer.email} has no registered pastes!`))
+                console.log(chalk.underline.yellow(`Lucky you, ${answer.email} has no registered pastes!`))
                 console.log('Error: ', error2.message);
 
             })
@@ -203,6 +223,18 @@ function pasteCheck() {
 
     }); //end of then emailCheck
 
+};
+
+function passwordCheck() {
+
+
+
+
+    console.log(`to be built`);
+
+
+
+};
 
 
 
@@ -213,7 +245,6 @@ function pasteCheck() {
 
 
 
-}
 
 
 start();

@@ -22,7 +22,8 @@
     "chalk": "^2.4.2",
     "console.table": "^0.10.0",
     "inquirer": "^6.2.1",
-    "numeral": "^2.0.6"
+    "numeral": "^2.0.6",
+    "sha1": "^1.1.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
