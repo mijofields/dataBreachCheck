@@ -141,6 +141,7 @@ function emailCheck() {
                 if (error1.response.status == 404) {
 
                     console.log(chalk.underline.yellow(`Lucky you, ${answer.email} has no registered breaches!`));
+                    console.log('Error: ', error1.message);
                     start();
 
                 } else {
@@ -222,6 +223,7 @@ function pasteCheck() {
                 if (error2.response.status == 404) {
 
                     console.log(chalk.underline.yellow(`Lucky you, ${answer.email} has no registered pastes!`));
+                    console.log('Error: ', error2.message);
                     start();
 
                 } else {
