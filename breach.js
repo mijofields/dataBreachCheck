@@ -242,7 +242,7 @@ function passwordCheck() {
     .then(function(answer) {
 
         let passWordHash = sha1(answer.password.trim());
-        let passWordHashSuffix = passWordHash.slice(-35);
+        let passWordHashSuffix = passWordHash.slice(-35).toUpperCase();
         let passWordHashPrefix = passWordHash.slice(0, 5);
         console.log(chalk.greenBright(`Your password hash is: ${passWordHash.toUpperCase()}`));
         console.log(chalk.yellowBright(`with k-Anonymity the API query will be on ${passWordHash.slice(0,5).toUpperCase()}`));
@@ -273,10 +273,10 @@ function passwordCheck() {
 
                 }
 
-                switch (suffixArrCountRemoved.includes(passWordHashSuffix.toUpperCase())) {
+                switch (suffixArrCountRemoved.includes(passWordHashSuffix)) {
 
                     case true:
-                        console.log(chalk.bold.red(`This password has been breached ${numeral(countOfBreaches[suffixArrCountRemoved.indexOf(passWordHashSuffix.toUpperCase())]).format('0,0')} times, you should change this password immediately`));
+                        console.log(chalk.bold.red(`This password has been breached ${numeral(countOfBreaches[suffixArrCountRemoved.indexOf(passWordHashSuffix)]).format('0,0')} times, you should change this password immediately`));
                         break;
 
                     case false:
