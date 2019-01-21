@@ -243,12 +243,13 @@ function passwordCheck() {
 
         let passWordHash = sha1(answer.password.trim());
         let passWordHashSuffix = passWordHash.slice(-35);
+        let passWordHashPrefix = passWordHash.slice(0, 5);
         console.log(chalk.greenBright(`Your password hash is: ${passWordHash.toUpperCase()}`));
         console.log(chalk.yellowBright(`with k-Anonymity the API query will be on ${passWordHash.slice(0,5).toUpperCase()}`));
         axios({
 
             method: 'get',
-            url: `https://api.pwnedpasswords.com/range/${passWordHash.slice(0,5)}`,
+            url: `https://api.pwnedpasswords.com/range/${passWordHashPrefix}`,
             headers: { 'User-Agent': `Mike's JS CLI` },
             timeout: 2000,
 
@@ -258,22 +259,25 @@ function passwordCheck() {
 
                 let suffixArr = answer.data.split('\r\n');
                 let suffixArrCountRemoved = [];
+                let countOfBreaches = [];
 
 
                 for (i = 0; i < suffixArr.length; i++) {
 
-                    suffixArrCountRemoved.push(suffixArr[i].slice(0, 35));
+                    let a = suffixArr[i].slice(0, 35);
+                    let b = suffixArr[i].slice(36, );
+
+                    suffixArrCountRemoved.push(a);
+                    countOfBreaches.push(b);
 
 
                 }
 
-
-                switch (suffixArrCountRemoved.includes(passWordHash.slice(-35).toUpperCase())) {
+                switch (suffixArrCountRemoved.includes(passWordHashSuffix.toUpperCase())) {
 
                     case true:
-                        console.log(chalk.bold.red(`This password has been breached, you should change this password immediately`));
+                        console.log(chalk.bold.red(`This password has been breached ${numeral(countOfBreaches[suffixArrCountRemoved.indexOf(passWordHashSuffix.toUpperCase())]).format('0,0')} times, you should change this password immediately`));
                         break;
-
 
                     case false:
                         console.log(chalk.bold.green(`This password has not been breached, your data is safe...for now`));
