@@ -137,9 +137,20 @@ function emailCheck() {
             })
             .catch(function(error1) {
 
-                console.log(chalk.underline.yellow(`Lucky you, ${answer.email} has no registered breaches!`))
-                console.log('Error: ', error1.message);
-                start();
+
+                if (error1.response.status == 404) {
+
+                    console.log(chalk.underline.yellow(`Lucky you, ${answer.email} has no registered breaches!`));
+                    start();
+
+                } else {
+
+                    console.log('Error: ', error1.message);
+                    start();
+
+                }
+
+
             })
 
 
@@ -207,9 +218,19 @@ function pasteCheck() {
             })
             .catch(function(error2) {
 
-                console.log(chalk.underline.yellow(`Lucky you, ${answer.email} has no registered pastes!`))
-                console.log('Error: ', error2.message);
-                start();
+
+                if (error2.response.status == 404) {
+
+                    console.log(chalk.underline.yellow(`Lucky you, ${answer.email} has no registered pastes!`));
+                    start();
+
+                } else {
+
+                    console.log('Error: ', error2.message);
+                    start();
+
+                }
+
             })
 
 

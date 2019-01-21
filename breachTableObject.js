@@ -18,6 +18,7 @@ function PasteModelBreach(source, date, title, emailCount) {
 
 }
 
+
 module.exports = {
 
     BreachTableObject: BreachTableObject,
