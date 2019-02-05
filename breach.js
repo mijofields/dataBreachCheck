@@ -222,7 +222,6 @@ function pasteCheck() {
                 if (error2.response.status == 404) {
 
                     console.log(chalk.underline.yellow(`Lucky you, ${answer.email} has no registered pastes!`));
-                    console.log('Error: ', error2.message);
                     start();
 
                 } else {
